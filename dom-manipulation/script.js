@@ -64,6 +64,45 @@
 //     addQuote();  // Add the new quote
 // });
 
+
+
+
+
+
+
+
+// Array to store quotes
+// let quotes = [
+//     { text: "The best way to predict the future is to create it.", category: "Inspirational" },
+//     { text: "Life is what happens when you're busy making other plans.", category: "Life" }
+//   ];
+  
+//   // Function to display a random quote
+//   function showRandomQuote() {
+//     let randomIndex = Math.floor(Math.random() * quotes.length);
+//     let quote = quotes[randomIndex];
+//     document.getElementById('quoteDisplay').innerText = `${quote.text} - ${quote.category}`;
+//   }
+  
+//   // Function to add a new quote
+//   function addQuote() {
+//     let newQuoteText = document.getElementById('newQuoteText').value;
+//     let newQuoteCategory = document.getElementById('newQuoteCategory').value;
+//     if (newQuoteText && newQuoteCategory) {
+//       quotes.push({ text: newQuoteText, category: newQuoteCategory });
+//       alert("Quote added successfully!");
+//     } else {
+//       alert("Please fill in both fields.");
+//     }
+//   }
+  
+//   document.getElementById('newQuote').addEventListener('click', showRandomQuote);
+  
+
+
+
+
+
 // Array to store quotes
 let quotes = [
     { text: "The best way to predict the future is to create it.", category: "Inspirational" },
@@ -77,6 +116,20 @@ let quotes = [
     document.getElementById('quoteDisplay').innerText = `${quote.text} - ${quote.category}`;
   }
   
+  // Function to create the form for adding new quotes
+  function createAddQuoteForm() {
+    let formContainer = document.getElementById('quoteFormContainer');
+    formContainer.innerHTML = `
+      <div>
+        <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
+        <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+        <button id="addQuoteButton">Add Quote</button>
+      </div>
+    `;
+  
+    document.getElementById('addQuoteButton').addEventListener('click', addQuote);
+  }
+  
   // Function to add a new quote
   function addQuote() {
     let newQuoteText = document.getElementById('newQuoteText').value;
@@ -84,10 +137,15 @@ let quotes = [
     if (newQuoteText && newQuoteCategory) {
       quotes.push({ text: newQuoteText, category: newQuoteCategory });
       alert("Quote added successfully!");
+      document.getElementById('newQuoteText').value = '';
+      document.getElementById('newQuoteCategory').value = '';
     } else {
       alert("Please fill in both fields.");
     }
   }
   
   document.getElementById('newQuote').addEventListener('click', showRandomQuote);
+  
+  // Call createAddQuoteForm to display the form on page load
+  createAddQuoteForm();
   
