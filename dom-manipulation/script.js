@@ -1,3 +1,6 @@
+       ////////////////////////////  code 1 ///////////////////////////////
+
+       
 // // Get DOM elements
 // const form = document.getElementById('quoteForm');
 // const quoteInput = document.getElementById('newQuoteText');
@@ -65,8 +68,7 @@
 // });
 
 
-
-
+////////////////////////////  code 2 ///////////////////////////////
 
 
 
@@ -101,7 +103,7 @@
 
 
 
-
+////////////////////////////  code 3 ///////////////////////////////
 
 // Array to store quotes
 let quotes = [
