@@ -23,8 +23,7 @@ const quotes = [
         document.getElementById('newQuoteCategory').value = " ";
 
 
-
-        // document.getElementById('quoteDisplay').style.display = 'block';
+// document.getElementById('quoteDisplay').style.display = 'block';
 
     }
    
