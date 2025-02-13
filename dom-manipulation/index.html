@@ -9,18 +9,21 @@
 <body>
     <div class="container">
         <h1>Dynamic Quote Generator</h1>
-    <div id="quoteDisplay"></div>
+    <div id="quoteDisplay">
+        <p class="quote"></p>
+         <p class="quoteCategory"></p>
+    </div>
     <button type="button" id="newQuote">Show New Quote</button>
 </br>
 
 
-    <div>
+    <form id="quoteForm">
     </br>
 
         <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
         <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
         <button type="button"  onclick="addQuote()">Add Quote</button>
-      </div>
+      </form >
     </div>
     <footer>
         <p>Quote Generator © 2024</p>
