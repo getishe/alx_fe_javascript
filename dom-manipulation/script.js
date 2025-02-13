@@ -1,8 +1,13 @@
-const quote = document.getElementById('newQuoteText');
-const author = document.getElementById('newQuoteCategory');
-const btn = document.getElementById('newQuote');
-const display = document.getElementById('quoteDisplay');
+// Get DOM elements
+const form = document.getElementById('quoteForm');
+const quoteInput = document.getElementById('newQuoteText');
+const authorInput = document.getElementById('newQuoteCategory');
+const newQuoteBtn = document.getElementById('newQuote');
+const quoteDisplay = document.getElementById('quoteDisplay');
+const quoteText = document.querySelector('.quote');
+const quoteCategory = document.querySelector('.quoteCategory');
 
+// Initial quotes array with sample data
 const quotes = [
     {
         quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.",
@@ -12,20 +17,49 @@ const quotes = [
         quote: "The way to get started is to quit talking and begin doing.",
         author: "Walt Disney"
     }
-    ];
+];
 
-    function addQuote(){
-        const displayQuoteA = document.createElement('p');
-        displayQuoteA.innerHTML = `<p>${quotes[0].quote}</p> <p>${quotes[0].author}</p>`;
-        display.appendChild(displayQuoteA);
+// Function to display all quotes in the DOM
+function displayQuotes() {
+    // Clear existing quotes
+    quoteDisplay.innerHTML = '';
+    
+    // Create and append new quote elements
+    quotes.forEach((quoteObj) => {
+        const quoteElement = document.createElement('p');
+        quoteElement.textContent = `"${quoteObj.quote}" - ${quoteObj.author}`;
+        quoteDisplay.appendChild(quoteElement);
+    });
+    
+    // Show the quotes container
+    quoteDisplay.style.display = 'block';
+}
 
-        document.getElementById('newQuoteText').value = " ";
-        document.getElementById('newQuoteCategory').value = " ";
+// Function to add a new quote to the quotes array
+function addQuote() {
+    // Create new quote object from form inputs
+    const newQuote = {
+        quote: quoteInput.value.trim(),
+        author: authorInput.value.trim()
+    };
 
-
-// document.getElementById('quoteDisplay').style.display = 'block';
-
+    // Validate and add the new quote
+    if (newQuote.quote && newQuote.author) {
+        quotes.push(newQuote);
+        // Clear form inputs
+        quoteInput.value = '';
+        authorInput.value = '';
+        // Update display with new quote
+        displayQuotes();
     }
-   
-    document.addEventListener('click', btn);
+}
 
+// Event Listeners for user interactions
+// Display quotes when button is clicked
+newQuoteBtn.addEventListener('click', displayQuotes);
+
+// Handle form submission
+form.addEventListener('submit', (event) => {
+    event.preventDefault();  // Prevent form from submitting
+    addQuote();  // Add the new quote
+});
