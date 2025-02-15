@@ -383,6 +383,7 @@ form.addEventListener('submit', (event) => {
 displayQuotes();
 
 
+// Export the Json file
 exportquotes.addEventListener('click', function() {
    const quoteJson =  JSON.stringify(quotes);
    const blob = new Blob([quoteJson], { type: 'application/json' });
@@ -391,4 +392,32 @@ exportquotes.addEventListener('click', function() {
    a.href = url;
    a.download = 'quotes.json';
    a.click();
+});
+
+//Import the Json file
+
+// function importFromJsonFile(event){
+//  const fileReader = new FileReader();
+//  fileReader.onload = function(event){
+//     const jsonString = event.target.result;
+//     const importedQuotes = JSON.parse(jsonString);
+//     quotes.push(...importedQuotes);
+//     localStorage.setItem('quotes', JSON.stringify(quotes));
+//     displayQuotes();
+//  };
+//   fileReader.readAsText(event.target.files[0]);
+
+// }
+
+document.getElementById('importFile').addEventListener('change', function(event) {
+ const file = event.target.files[0];
+ const reader = new FileReader();
+ reader.onload = function(event) {
+    const jsonString = event.target.result;
+    const importedQuotes = JSON.parse(jsonString);
+    quotes.push(...importedQuotes);
+    localStorage.setItem('quotes', JSON.stringify(quotes)); 
+    displayQuotes();
+ }
+ reader.readAsText(file);
 });
