@@ -313,25 +313,143 @@
 
 // Function to display all quotes in the DOM
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Get DOM ELEMNTS specfic 
+// const form = document.getElementById('quoteForm');
+// const quoteInput = document.getElementById('newQuoteText');
+// const authorInput = document.getElementById('newQuoteCategory');
+// const newQuoteBtn = document.getElementById('newQuote');
+// const quoteDisplay = document.getElementById('quoteDisplay');
+// const categoriesFilter = document.getElementById('categoriesFilter');
+// // Initial quotes array with sample data or from localStorage
+// const quotes = JSON.parse(localStorage.getItem('quotes')) || [
+//     { quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Nelson Mandela" },
+//     { quote: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" }
+// ]; 
+
+// function displayQuotes() {
+//     // Clear existing quotes
+//     quoteDisplay.innerHTML = '';
+
+//     // Display each quote with a remove button
+//     quotes.forEach((quoteObj, index) => {
+//         const quoteElement = document.createElement('p');
+//         quoteElement.textContent = `"${quoteObj.quote}" - ${quoteObj.author}`;
+
+//         const removeBtn = document.createElement('button');
+//         removeBtn.textContent = 'Remove';
+//         removeBtn.addEventListener('click', () => removeQuote(index));
+
+//         quoteElement.appendChild(removeBtn);
+//         quoteDisplay.appendChild(quoteElement);
+//     });
+
+//     // Show the quotes container
+//     quoteDisplay.style.display = 'block';
+// }
+
+// // Function to remove a specific quote
+// function removeQuote(index) {
+//     quotes.splice(index, 1); // Remove the quote at the specified index
+//     localStorage.setItem('quotes', JSON.stringify(quotes)); // Update localStorage
+//     displayQuotes(); // Update the display
+// }
+
+
+
+// // Other functions and event listeners remain the same
+// function addQuote() {
+//     const newQuote = {
+//         quote: quoteInput.value.trim(),
+//         author: authorInput.value.trim()
+//     };
+
+//     if (newQuote.quote && newQuote.author) {
+//         quotes.push(newQuote);
+//         localStorage.setItem('quotes', JSON.stringify(quotes));
+//         quoteInput.value = '';
+//         authorInput.value = '';
+//         displayQuotes();
+//     }
+// }
+
+// newQuoteBtn.addEventListener('click', displayQuotes());
+
+// form.addEventListener('submit', (event) => {
+//     event.preventDefault();
+//     addQuote();
+// });
+
+// // Display quotes on page load
+// displayQuotes();
+
+
+// // Export the Json file
+// exportquotes.addEventListener('click', function() {
+//    const quoteJson =  JSON.stringify(quotes);
+//    const blob = new Blob([quoteJson], { type: 'application/json' });
+//    const url = URL.createObjectURL(blob);
+//    const a = document.createElement('a');
+//    a.href = url;
+//    a.download = 'quotes.json';
+//    a.click();
+// });
+
+// //Import the Json file
+
+// // function importFromJsonFile(event){
+// //  const fileReader = new FileReader();
+// //  fileReader.onload = function(event){
+// //     const jsonString = event.target.result;
+// //     const importedQuotes = JSON.parse(jsonString);
+// //     quotes.push(...importedQuotes);
+// //     localStorage.setItem('quotes', JSON.stringify(quotes));
+// //     displayQuotes();
+// //  };
+// //   fileReader.readAsText(event.target.files[0]);
+
+// // }
+
+// //Import the Json file anther method
+
+// document.getElementById('importFile').addEventListener('change', function(event) {
+//  const file = event.target.files[0];
+//  const reader = new FileReader();
+//  reader.onload = function(event) {
+//     const jsonString = event.target.result;
+//     const importedQuotes = JSON.parse(jsonString);
+//     quotes.push(...importedQuotes);
+//     localStorage.setItem('quotes', JSON.stringify(quotes)); 
+//     displayQuotes();
+//  }
+//  reader.readAsText(file);
+// });
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+//  Creating a Dynamic Content Filtering System Using Web Storage and JSON
+
+//Populate Categories Dynamically:
 const form = document.getElementById('quoteForm');
 const quoteInput = document.getElementById('newQuoteText');
 const authorInput = document.getElementById('newQuoteCategory');
-const newQuoteBtn = document.getElementById('newQuote');
 const quoteDisplay = document.getElementById('quoteDisplay');
-// Initial quotes array with sample data or from localStorage
+const categoryFilter = document.getElementById('categoryFilter');
+const newQuoteBtn = document.getElementById('newQuote');
 const quotes = JSON.parse(localStorage.getItem('quotes')) || [
     { quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Nelson Mandela" },
     { quote: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" }
-]; 
+];
 
-function displayQuotes() {
-    // Clear existing quotes
+function displayQuotes(quotesToDisplay = quotes) {
     quoteDisplay.innerHTML = '';
-
-    // Display each quote with a remove button
-    quotes.forEach((quoteObj, index) => {
+    quotesToDisplay.forEach((quoteObj, index) => {
         const quoteElement = document.createElement('p');
         quoteElement.textContent = `"${quoteObj.quote}" - ${quoteObj.author}`;
 
@@ -343,20 +461,15 @@ function displayQuotes() {
         quoteDisplay.appendChild(quoteElement);
     });
 
-    // Show the quotes container
     quoteDisplay.style.display = 'block';
 }
 
-// Function to remove a specific quote
 function removeQuote(index) {
-    quotes.splice(index, 1); // Remove the quote at the specified index
-    localStorage.setItem('quotes', JSON.stringify(quotes)); // Update localStorage
-    displayQuotes(); // Update the display
+    quotes.splice(index, 1);
+    localStorage.setItem('quotes', JSON.stringify(quotes));
+    displayQuotes();
 }
 
-
-
-// Other functions and event listeners remain the same
 function addQuote() {
     const newQuote = {
         quote: quoteInput.value.trim(),
@@ -369,55 +482,70 @@ function addQuote() {
         quoteInput.value = '';
         authorInput.value = '';
         displayQuotes();
+        populateCategories();
     }
 }
 
-newQuoteBtn.addEventListener('click', displayQuotes());
+function populateCategories() {
+    const categories = [...new Set(quotes.map(quote => quote.author))];
+    categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categoryFilter.appendChild(option);
+    });
+}
+
+function filterQuotes() {
+    const selectedCategory = categoryFilter.value;
+    const filteredQuotes = selectedCategory === 'all'
+        ? quotes
+        : quotes.filter(quote => quote.author === selectedCategory);
+    displayQuotes(filteredQuotes);
+}
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();
     addQuote();
 });
 
-// Display quotes on page load
-displayQuotes();
-
+document.getElementById('exportquotes').addEventListener('click', () => {
+    const quotesJson = JSON.stringify(quotes);
+    const blob = new Blob([quotesJson], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'quotes.json';
+    a.click();
+});
 
 // Export the Json file
-exportquotes.addEventListener('click', function() {
-   const quoteJson =  JSON.stringify(quotes);
-   const blob = new Blob([quoteJson], { type: 'application/json' });
-   const url = URL.createObjectURL(blob);
-   const a = document.createElement('a');
-   a.href = url;
-   a.download = 'quotes.json';
-   a.click();
+// exportquotes.addEventListener('click', function() {
+//    const quoteJson =  JSON.stringify(quotes);
+//    const blob = new Blob([quoteJson], { type: 'application/json' });
+//    const url = URL.createObjectURL(blob);
+//    const a = document.createElement('a');
+//    a.href = url;
+//    a.download = 'quotes.json';
+//    a.click();
+// });
+
+
+document.getElementById('importFile').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const importedQuotes = JSON.parse(event.target.result);
+        quotes.push(...importedQuotes);
+        localStorage.setItem('quotes', JSON.stringify(quotes));
+        displayQuotes();
+        populateCategories();
+    };
+    reader.readAsText(file);
 });
 
-//Import the Json file
-
-// function importFromJsonFile(event){
-//  const fileReader = new FileReader();
-//  fileReader.onload = function(event){
-//     const jsonString = event.target.result;
-//     const importedQuotes = JSON.parse(jsonString);
-//     quotes.push(...importedQuotes);
-//     localStorage.setItem('quotes', JSON.stringify(quotes));
-//     displayQuotes();
-//  };
-//   fileReader.readAsText(event.target.files[0]);
-
-// }
-
-document.getElementById('importFile').addEventListener('change', function(event) {
- const file = event.target.files[0];
- const reader = new FileReader();
- reader.onload = function(event) {
-    const jsonString = event.target.result;
-    const importedQuotes = JSON.parse(jsonString);
-    quotes.push(...importedQuotes);
-    localStorage.setItem('quotes', JSON.stringify(quotes)); 
+window.onload = () => {
     displayQuotes();
- }
- reader.readAsText(file);
-});
+    populateCategories();
+};
