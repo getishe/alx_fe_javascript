@@ -381,3 +381,14 @@ form.addEventListener('submit', (event) => {
 
 // Display quotes on page load
 displayQuotes();
+
+
+exportquotes.addEventListener('click', function() {
+   const quoteJson =  JSON.stringify(quotes);
+   const blob = new Blob([quoteJson], { type: 'application/json' });
+   const url = URL.createObjectURL(blob);
+   const a = document.createElement('a');
+   a.href = url;
+   a.download = 'quotes.json';
+   a.click();
+});
