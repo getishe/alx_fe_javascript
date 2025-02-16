@@ -549,3 +549,133 @@ window.onload = () => {
     displayQuotes();
     populateCategories();
 };
+
+
+// Step 1: Simulate Server Interaction
+
+const serverURL = 'https://jsonplaceholder.typicode.com/posts';
+
+// Fetch existing quotes from server
+async function fetchQuotesFromServer() {
+    try {
+        const response = await fetch(serverURL);
+        const serverQuotes = await response.json();
+        return serverQuotes;
+    } catch (error) {
+        console.error('Error fetching quotes from server:', error);
+    }
+}
+
+// Post new quotes to server
+async function postQuoteToServer(quote) {
+    try {
+        const response = await fetch(serverURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(quote)
+        });
+        const newQuote = await response.json();
+        return newQuote;
+    } catch (error) {
+        console.error('Error posting quote to server:', error);
+    }
+}
+// Implement Periodic Data Fetching:
+
+async function syncQuotesWithServer() {
+    const serverQuotes = await fetchQuotesFromServer();
+    const updatedQuotes = resolveConflicts(quotes, serverQuotes);
+    quotes.length = 0; // Clear current quotes
+    quotes.push(...updatedQuotes);
+    localStorage.setItem('quotes', JSON.stringify(quotes));
+    displayQuotes();
+}
+
+// Periodically sync quotes every 5 minutes
+setInterval(syncQuotesWithServer, 5 * 60 * 1000);
+
+// Step 2: Implement Data Syncing
+
+function resolveConflicts(localQuotes, serverQuotes) {
+    const localQuoteMap = new Map(localQuotes.map((q, index) => [index, q]));
+    serverQuotes.forEach(serverQuote => {
+        if (localQuoteMap.has(serverQuote.id)) {
+            // Resolve conflict (server data takes precedence)
+            localQuoteMap.set(serverQuote.id, serverQuote);
+        } else {
+            // Add new server quote to local quotes
+            localQuoteMap.set(serverQuote.id, serverQuote);
+        }
+    });
+    return Array.from(localQuoteMap.values());
+}
+
+
+// Post New Quotes:
+
+async function addQuote() {
+    const newQuote = {
+        quote: quoteInput.value.trim(),
+        author: authorInput.value.trim()
+    };
+
+    if (newQuote.quote && newQuote.author) {
+        const savedQuote = await postQuoteToServer(newQuote);
+        quotes.push(savedQuote);
+        localStorage.setItem('quotes', JSON.stringify(quotes));
+        quoteInput.value = '';
+        authorInput.value = '';
+        displayQuotes();
+        populateCategories();
+    }
+}
+
+
+// Step 3: Handling Conflicts
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.className = 'notification';
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+}
+
+async function syncQuotesWithServer() {
+    const serverQuotes = await fetchQuotesFromServer();
+    const updatedQuotes = resolveConflicts(quotes, serverQuotes);
+    quotes.length = 0;
+    quotes.push(...updatedQuotes);
+    localStorage.setItem('quotes', JSON.stringify(quotes));
+    displayQuotes();
+    showNotification('Quotes synced with server.');
+}
+
+// Manual Conflict Resolution:
+
+function resolveConflicts(localQuotes, serverQuotes) {
+    const localQuoteMap = new Map(localQuotes.map((q, index) => [index, q]));
+    const conflicts = [];
+
+    serverQuotes.forEach(serverQuote => {
+        if (localQuoteMap.has(serverQuote.id)) {
+            // Detect conflict
+            conflicts.push({ local: localQuoteMap.get(serverQuote.id), server: serverQuote });
+        } else {
+            localQuoteMap.set(serverQuote.id, serverQuote);
+        }
+    });
+
+    // Handle conflicts
+    conflicts.forEach(conflict => {
+        // Here you can add your conflict resolution logic, such as user prompts
+        localQuoteMap.set(conflict.server.id, conflict.server); // Default to server quote
+    });
+
+    return Array.from(localQuoteMap.values());
+}
+
+
+//fetch existing quotes from the server
+
