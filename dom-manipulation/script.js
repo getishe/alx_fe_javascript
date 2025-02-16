@@ -436,12 +436,255 @@
 //  Creating a Dynamic Content Filtering System Using Web Storage and JSON
 
 //Populate Categories Dynamically:
+// const form = document.getElementById('quoteForm');
+// const quoteInput = document.getElementById('newQuoteText');
+// const authorInput = document.getElementById('newQuoteCategory');
+// const quoteDisplay = document.getElementById('quoteDisplay');
+// const categoryFilter = document.getElementById('categoryFilter');
+// const newQuoteBtn = document.getElementById('newQuote');
+// const quotes = JSON.parse(localStorage.getItem('quotes')) || [
+//     { quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Nelson Mandela" },
+//     { quote: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" }
+// ];
+
+// function displayQuotes(quotesToDisplay = quotes) {
+//     quoteDisplay.innerHTML = '';
+//     quotesToDisplay.forEach((quoteObj, index) => {
+//         const quoteElement = document.createElement('p');
+//         quoteElement.textContent = `"${quoteObj.quote}" - ${quoteObj.author}`;
+
+//         const removeBtn = document.createElement('button');
+//         removeBtn.textContent = 'Remove';
+//         removeBtn.addEventListener('click', () => removeQuote(index));
+
+//         quoteElement.appendChild(removeBtn);
+//         quoteDisplay.appendChild(quoteElement);
+//     });
+
+//     quoteDisplay.style.display = 'block';
+// }
+
+// function removeQuote(index) {
+//     quotes.splice(index, 1);
+//     localStorage.setItem('quotes', JSON.stringify(quotes));
+//     displayQuotes();
+// }
+
+// function addQuote() {
+//     const newQuote = {
+//         quote: quoteInput.value.trim(),
+//         author: authorInput.value.trim()
+//     };
+
+//     if (newQuote.quote && newQuote.author) {
+//         quotes.push(newQuote);
+//         localStorage.setItem('quotes', JSON.stringify(quotes));
+//         quoteInput.value = '';
+//         authorInput.value = '';
+//         displayQuotes();
+//         populateCategories();
+//     }
+// }
+
+// function populateCategories() {
+//     const categories = [...new Set(quotes.map(quote => quote.author))];
+//     categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+//     categories.forEach(category => {
+//         const option = document.createElement('option');
+//         option.value = category;
+//         option.textContent = category;
+//         categoryFilter.appendChild(option);
+//     });
+// }
+
+// function filterQuotes() {
+//     const selectedCategory = categoryFilter.value;
+//     const filteredQuotes = selectedCategory === 'all'
+//         ? quotes
+//         : quotes.filter(quote => quote.author === selectedCategory);
+//     displayQuotes(filteredQuotes);
+// }
+
+// form.addEventListener('submit', (event) => {
+//     event.preventDefault();
+//     addQuote();
+// });
+
+// document.getElementById('exportquotes').addEventListener('click', () => {
+//     const quotesJson = JSON.stringify(quotes);
+//     const blob = new Blob([quotesJson], { type: 'application/json' });
+//     const url = URL.createObjectURL(blob);
+//     const a = document.createElement('a');
+//     a.href = url;
+//     a.download = 'quotes.json';
+//     a.click();
+// });
+
+// // Export the Json file
+// // exportquotes.addEventListener('click', function() {
+// //    const quoteJson =  JSON.stringify(quotes);
+// //    const blob = new Blob([quoteJson], { type: 'application/json' });
+// //    const url = URL.createObjectURL(blob);
+// //    const a = document.createElement('a');
+// //    a.href = url;
+// //    a.download = 'quotes.json';
+// //    a.click();
+// // });
+
+
+// document.getElementById('importFile').addEventListener('change', (event) => {
+//     const file = event.target.files[0];
+//     const reader = new FileReader();
+//     reader.onload = function(event) {
+//         const importedQuotes = JSON.parse(event.target.result);
+//         quotes.push(...importedQuotes);
+//         localStorage.setItem('quotes', JSON.stringify(quotes));
+//         displayQuotes();
+//         populateCategories();
+//     };
+//     reader.readAsText(file);
+// });
+
+// window.onload = () => {
+//     displayQuotes();
+//     populateCategories();
+// };
+
+
+// // Step 1: Simulate Server Interaction
+
+// const serverURL = 'https://jsonplaceholder.typicode.com/posts';
+
+// // Fetch existing quotes from server
+// async function fetchQuotesFromServer() {
+//     try {
+//         const response = await fetch(serverURL);
+//         const serverQuotes = await response.json();
+//         return serverQuotes;
+//     } catch (error) {
+//         console.error('Error fetching quotes from server:', error);
+//     }
+// }
+
+// // Post new quotes to server
+// async function postQuoteToServer(quote) {
+//     try {
+//         const response = await fetch(serverURL, {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(quote)
+//         });
+//         const newQuote = await response.json();
+//         return newQuote;
+//     } catch (error) {
+//         console.error('Error posting quote to server:', error);
+//     }
+// }
+// // Implement Periodic Data Fetching:
+
+// async function syncQuotesWithServer() {
+//     const serverQuotes = await fetchQuotesFromServer();
+//     const updatedQuotes = resolveConflicts(quotes, serverQuotes);
+//     quotes.length = 0; // Clear current quotes
+//     quotes.push(...updatedQuotes);
+//     localStorage.setItem('quotes', JSON.stringify(quotes));
+//     displayQuotes();
+// }
+
+// // Periodically sync quotes every 5 minutes
+// setInterval(syncQuotesWithServer, 5 * 60 * 1000);
+
+// // Step 2: Implement Data Syncing
+
+// function resolveConflicts(localQuotes, serverQuotes) {
+//     const localQuoteMap = new Map(localQuotes.map((q, index) => [index, q]));
+//     serverQuotes.forEach(serverQuote => {
+//         if (localQuoteMap.has(serverQuote.id)) {
+//             // Resolve conflict (server data takes precedence)
+//             localQuoteMap.set(serverQuote.id, serverQuote);
+//         } else {
+//             // Add new server quote to local quotes
+//             localQuoteMap.set(serverQuote.id, serverQuote);
+//         }
+//     });
+//     return Array.from(localQuoteMap.values());
+// }
+
+
+// // Post New Quotes:
+
+// async function addQuote() {
+//     const newQuote = {
+//         quote: quoteInput.value.trim(),
+//         author: authorInput.value.trim()
+//     };
+
+//     if (newQuote.quote && newQuote.author) {
+//         const savedQuote = await postQuoteToServer(newQuote);
+//         quotes.push(savedQuote);
+//         localStorage.setItem('quotes', JSON.stringify(quotes));
+//         quoteInput.value = '';
+//         authorInput.value = '';
+//         displayQuotes();
+//         populateCategories();
+//     }
+// }
+
+
+// // Step 3: Handling Conflicts
+// function showNotification(message) {
+//     const notification = document.createElement('div');
+//     notification.textContent = message;
+//     notification.className = 'notification';
+//     document.body.appendChild(notification);
+//     setTimeout(() => notification.remove(), 3000);
+// }
+
+// async function syncQuotesWithServer() {
+//     const serverQuotes = await fetchQuotesFromServer();
+//     const updatedQuotes = resolveConflicts(quotes, serverQuotes);
+//     quotes.length = 0;
+//     quotes.push(...updatedQuotes);
+//     localStorage.setItem('quotes', JSON.stringify(quotes));
+//     displayQuotes();
+//     showNotification('Quotes synced with server.');
+// }
+
+// // Manual Conflict Resolution:
+
+// function resolveConflicts(localQuotes, serverQuotes) {
+//     const localQuoteMap = new Map(localQuotes.map((q, index) => [index, q]));
+//     const conflicts = [];
+
+//     serverQuotes.forEach(serverQuote => {
+//         if (localQuoteMap.has(serverQuote.id)) {
+//             // Detect conflict
+//             conflicts.push({ local: localQuoteMap.get(serverQuote.id), server: serverQuote });
+//         } else {
+//             localQuoteMap.set(serverQuote.id, serverQuote);
+//         }
+//     });
+
+//     // Handle conflicts
+//     conflicts.forEach(conflict => {
+//         // Here you can add your conflict resolution logic, such as user prompts
+//         localQuoteMap.set(conflict.server.id, conflict.server); // Default to server quote
+//     });
+
+//     return Array.from(localQuoteMap.values());
+// }
+
+// Populate Categories Dynamically:
 const form = document.getElementById('quoteForm');
 const quoteInput = document.getElementById('newQuoteText');
 const authorInput = document.getElementById('newQuoteCategory');
 const quoteDisplay = document.getElementById('quoteDisplay');
 const categoryFilter = document.getElementById('categoryFilter');
 const newQuoteBtn = document.getElementById('newQuote');
+const serverURL = 'https://jsonplaceholder.typicode.com/posts';
+
 const quotes = JSON.parse(localStorage.getItem('quotes')) || [
     { quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Nelson Mandela" },
     { quote: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" }
@@ -470,14 +713,15 @@ function removeQuote(index) {
     displayQuotes();
 }
 
-function addQuote() {
+async function addQuote() {
     const newQuote = {
         quote: quoteInput.value.trim(),
         author: authorInput.value.trim()
     };
 
     if (newQuote.quote && newQuote.author) {
-        quotes.push(newQuote);
+        const savedQuote = await postQuoteToServer(newQuote);
+        quotes.push(savedQuote);
         localStorage.setItem('quotes', JSON.stringify(quotes));
         quoteInput.value = '';
         authorInput.value = '';
@@ -520,18 +764,6 @@ document.getElementById('exportquotes').addEventListener('click', () => {
     a.click();
 });
 
-// Export the Json file
-// exportquotes.addEventListener('click', function() {
-//    const quoteJson =  JSON.stringify(quotes);
-//    const blob = new Blob([quoteJson], { type: 'application/json' });
-//    const url = URL.createObjectURL(blob);
-//    const a = document.createElement('a');
-//    a.href = url;
-//    a.download = 'quotes.json';
-//    a.click();
-// });
-
-
 document.getElementById('importFile').addEventListener('change', (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -545,17 +777,6 @@ document.getElementById('importFile').addEventListener('change', (event) => {
     reader.readAsText(file);
 });
 
-window.onload = () => {
-    displayQuotes();
-    populateCategories();
-};
-
-
-// Step 1: Simulate Server Interaction
-
-const serverURL = 'https://jsonplaceholder.typicode.com/posts';
-
-// Fetch existing quotes from server
 async function fetchQuotesFromServer() {
     try {
         const response = await fetch(serverURL);
@@ -566,7 +787,6 @@ async function fetchQuotesFromServer() {
     }
 }
 
-// Post new quotes to server
 async function postQuoteToServer(quote) {
     try {
         const response = await fetch(serverURL, {
@@ -582,58 +802,26 @@ async function postQuoteToServer(quote) {
         console.error('Error posting quote to server:', error);
     }
 }
-// Implement Periodic Data Fetching:
-
-async function syncQuotesWithServer() {
-    const serverQuotes = await fetchQuotesFromServer();
-    const updatedQuotes = resolveConflicts(quotes, serverQuotes);
-    quotes.length = 0; // Clear current quotes
-    quotes.push(...updatedQuotes);
-    localStorage.setItem('quotes', JSON.stringify(quotes));
-    displayQuotes();
-}
-
-// Periodically sync quotes every 5 minutes
-setInterval(syncQuotesWithServer, 5 * 60 * 1000);
-
-// Step 2: Implement Data Syncing
 
 function resolveConflicts(localQuotes, serverQuotes) {
     const localQuoteMap = new Map(localQuotes.map((q, index) => [index, q]));
+    const conflicts = [];
+
     serverQuotes.forEach(serverQuote => {
         if (localQuoteMap.has(serverQuote.id)) {
-            // Resolve conflict (server data takes precedence)
-            localQuoteMap.set(serverQuote.id, serverQuote);
+            conflicts.push({ local: localQuoteMap.get(serverQuote.id), server: serverQuote });
         } else {
-            // Add new server quote to local quotes
             localQuoteMap.set(serverQuote.id, serverQuote);
         }
     });
+
+    conflicts.forEach(conflict => {
+        localQuoteMap.set(conflict.server.id, conflict.server);
+    });
+
     return Array.from(localQuoteMap.values());
 }
 
-
-// Post New Quotes:
-
-async function addQuote() {
-    const newQuote = {
-        quote: quoteInput.value.trim(),
-        author: authorInput.value.trim()
-    };
-
-    if (newQuote.quote && newQuote.author) {
-        const savedQuote = await postQuoteToServer(newQuote);
-        quotes.push(savedQuote);
-        localStorage.setItem('quotes', JSON.stringify(quotes));
-        quoteInput.value = '';
-        authorInput.value = '';
-        displayQuotes();
-        populateCategories();
-    }
-}
-
-
-// Step 3: Handling Conflicts
 function showNotification(message) {
     const notification = document.createElement('div');
     notification.textContent = message;
@@ -649,33 +837,14 @@ async function syncQuotesWithServer() {
     quotes.push(...updatedQuotes);
     localStorage.setItem('quotes', JSON.stringify(quotes));
     displayQuotes();
-    showNotification('Quotes synced with server.');
+    showNotification('Quotes synced with server!');
 }
 
-// Manual Conflict Resolution:
+setInterval(syncQuotesWithServer, 5 * 60 * 1000);
 
-function resolveConflicts(localQuotes, serverQuotes) {
-    const localQuoteMap = new Map(localQuotes.map((q, index) => [index, q]));
-    const conflicts = [];
+window.onload = () => {
+    displayQuotes();
+    populateCategories();
+};
 
-    serverQuotes.forEach(serverQuote => {
-        if (localQuoteMap.has(serverQuote.id)) {
-            // Detect conflict
-            conflicts.push({ local: localQuoteMap.get(serverQuote.id), server: serverQuote });
-        } else {
-            localQuoteMap.set(serverQuote.id, serverQuote);
-        }
-    });
-
-    // Handle conflicts
-    conflicts.forEach(conflict => {
-        // Here you can add your conflict resolution logic, such as user prompts
-        localQuoteMap.set(conflict.server.id, conflict.server); // Default to server quote
-    });
-
-    return Array.from(localQuoteMap.values());
-}
-
-
-//fetch existing quotes from the server
 
